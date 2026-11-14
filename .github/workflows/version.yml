@@ -1,0 +1,48 @@
+name: Versionado semántico
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: versionado-semantico
+  cancel-in-progress: false
+
+jobs:
+  bump-version:
+    # Evita el loop infinito: no correr sobre el propio commit de bump.
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Calcular incremento de versión
+        env:
+          COMMITS_JSON: ${{ toJson(github.event.commits) }}
+        run: node scripts/release/bump-version.mjs
+
+      - name: Commitear y pushear la nueva versión (si hubo incremento)
+        run: |
+          if [ -f .version-bumped ]; then
+            NUEVA_VERSION=$(cat .version-bumped)
+            rm .version-bumped
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add package.json versions.md
+            git commit -m "chore(release): ${NUEVA_VERSION} [skip ci]"
+            git push
+          else
+            echo "Sin incremento de versión en este push."
+          fi
