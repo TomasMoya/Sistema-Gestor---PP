@@ -1,0 +1,103 @@
+/* Gestión Personal — generated from tokens.json */
+:root, [data-theme="light"] {
+  --surface: #fff8f4;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f3e6da;
+  --outline: #d3c4b4;
+  --outline-strong: #817567;
+  --ink: #211b13;
+  --ink-muted: #4f4539;
+  --primary: #805610;
+  --on-primary: #ffffff;
+  --primary-soft: #d4eabb;
+  --on-primary-soft: #3b4c29;
+  --accent: #705b40;
+  --accent-soft: #f5bc6f;
+  --on-accent-soft: #291800;
+  --prio-high: #805610;
+  --on-prio-high: #ffffff;
+  --prio-medium: #ffddb4;
+  --on-prio-medium: #633f00;
+  --prio-low: #ede0d4;
+  --on-prio-low: #4f4539;
+  --success: #52643f;
+  --success-soft: #d4eabb;
+  --danger: #ba1a1a;
+  --danger-soft: #ffdad6;
+  --warning: #9a4600;
+  --focus: #805610;
+  --scrim: #000000;
+  --cat-home: #775930;
+  --cat-leisure: #a04a2c;
+  --cat-food: #52643f;
+  --cat-transport: #4f5f8a;
+  --on-cat: #ffffff;
+  --elevation-1: 0 1px 2px rgba(33,27,19,.06), 0 1px 3px rgba(33,27,19,.04);
+  --elevation-3: 0 6px 16px rgba(33,27,19,.18), 0 2px 4px rgba(33,27,19,.10);
+}
+[data-theme="dark"] {
+  --surface: #18120b;
+  --surface-raised: #251f17;
+  --surface-sunken: #3b342b;
+  --outline: #4f4539;
+  --outline-strong: #9c8f80;
+  --ink: #ede0d4;
+  --ink-muted: #d3c4b4;
+  --primary: #f5bc6f;
+  --on-primary: #452b00;
+  --primary-soft: #3b4c29;
+  --on-primary-soft: #d4eabb;
+  --accent: #ddc2a1;
+  --accent-soft: #f5bc6f;
+  --on-accent-soft: #291800;
+  --prio-high: #f5bc6f;
+  --on-prio-high: #452b00;
+  --prio-medium: #633f00;
+  --on-prio-medium: #ffddb4;
+  --prio-low: #3b342b;
+  --on-prio-low: #d3c4b4;
+  --success: #b9cda0;
+  --success-soft: #3b4c29;
+  --danger: #ffb4ab;
+  --danger-soft: #93000a;
+  --warning: #ffb780;
+  --focus: #f5bc6f;
+  --scrim: #000000;
+  --cat-home: #e7c08e;
+  --cat-leisure: #ffb59e;
+  --cat-food: #b9cda0;
+  --cat-transport: #b4c4f2;
+  --on-cat: #18120b;
+  --elevation-1: none;
+  --elevation-3: 0 6px 16px rgba(0,0,0,.5);
+}
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --touch-target: 48px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 999px;
+  --bp-medium: 600px;
+  --bp-expanded: 840px;
+  --content-max: 1200px;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.headline { font-family: var(--font-display); font-size: 30px; line-height: 36px; font-weight: 600; letter-spacing: -0.01em; }
+.title-lg { font-family: var(--font-display); font-size: 22px; line-height: 28px; font-weight: 600; }
+.title-md { font-family: var(--font-display); font-size: 18px; line-height: 24px; font-weight: 600; }
+.item-title { font-family: var(--font-sans); font-size: 16px; line-height: 22px; font-weight: 500; }
+.body-lg { font-family: var(--font-sans); font-size: 16px; line-height: 24px; font-weight: 400; }
+.body-md { font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 400; }
+.label-lg { font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 600; }
+.label-md { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.02em; }
+.figure-lg { font-family: var(--font-display); font-size: 36px; line-height: 40px; font-weight: 600; letter-spacing: -0.01em; }
+.figure-md { font-family: var(--font-sans); font-size: 18px; line-height: 24px; font-weight: 600; }
