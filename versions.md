@@ -17,6 +17,17 @@ Se reconoce el prefijo al inicio del mensaje de commit.
 
 ## Versiones publicadas
 
+### 0.1.2
+
+0.1.1 → 0.1.2 · Incremento parche · 1 commits · 2026-11-14
+
+**Correcciones**
+
+- `3302157` fix: agrega el workflow de versionado y el .gitignore que faltaban subir
+
+---
+
+
 ### 0.1.1 — Versión inicial
 
 Punto de partida del historial. Los siguientes incrementos se calculan desde esta versión.
