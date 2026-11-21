@@ -1,3 +1,5 @@
+import type { Coins } from "./coins/coin";
+
 export type Priority = "high" | "medium" | "low";
 
 /** Categoría resuelta para mostrar en la UI (nombre/icono vienen de la tabla `categories`). */
@@ -55,6 +57,7 @@ export interface FinanceData {
 export interface Movement {
   id: string;
   amount: number; // céntimos
+  currency: Coins;
   date: string; // ISO yyyy-mm-dd
   note?: string;
   category?: CategoryRef;

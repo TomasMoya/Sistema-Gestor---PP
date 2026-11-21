@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { budgetTone } from "@/lib/budget";
 import { formatCurrency, formatPercent } from "@/lib/format";
 import { Icon } from "./Icon";
@@ -9,6 +10,8 @@ interface SummaryCardProps {
   expenses: number;
   budget: number;
   monthLabel: string;
+  /** Acción opcional junto a la etiqueta "Disponible este mes" (p. ej. un botón para verlo en otra moneda). */
+  heroAction?: ReactNode;
 }
 
 const TONE_TEXT_COLOR: Record<ReturnType<typeof budgetTone>, string> = {
@@ -18,7 +21,7 @@ const TONE_TEXT_COLOR: Record<ReturnType<typeof budgetTone>, string> = {
 };
 
 /** Cifra protagonista (Fraunces 36/40), ingresos/gastos y el avance del presupuesto, con la barra de tono automático. */
-export function SummaryCard({ available, income, expenses, budget, monthLabel }: SummaryCardProps) {
+export function SummaryCard({ available, income, expenses, budget, monthLabel, heroAction }: SummaryCardProps) {
   const ratio = budget > 0 ? expenses / budget : 0;
   const tone = budgetTone(ratio);
   const remaining = budget - expenses;
@@ -26,7 +29,10 @@ export function SummaryCard({ available, income, expenses, budget, monthLabel }:
   return (
     <section className="gp-card gp-summary" aria-label="Resumen del mes">
       <div className="gp-summary__hero">
-        <span className="gp-summary__label">Disponible este mes</span>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--space-2)" }}>
+          <span className="gp-summary__label">Disponible este mes</span>
+          {heroAction}
+        </div>
         <span className="gp-summary__value gp-num">{formatCurrency(available)}</span>
         <span className="gp-section__meta">Ingresos menos gastos de {monthLabel}</span>
       </div>

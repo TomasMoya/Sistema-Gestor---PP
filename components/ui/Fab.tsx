@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { cn } from "@/lib/cn";
 import { Icon } from "./Icon";
 
@@ -10,10 +10,13 @@ interface FabProps {
   ariaLabel?: string;
   onClick?: () => void;
   className?: string;
+  style?: CSSProperties;
+  /** Para un `style` con colores inline que extensiones como Dark Reader reescriben antes de hidratar. */
+  suppressHydrationWarning?: boolean;
 }
 
 /** FAB extendido por defecto; se contrae a 56×56 al hacer scroll hacia abajo. Solo visible en < 840px (lo oculta `.gp-screen`). */
-export function Fab({ icon, label, ariaLabel, onClick, className }: FabProps) {
+export function Fab({ icon, label, ariaLabel, onClick, className, style, suppressHydrationWarning }: FabProps) {
   const ref = useRef<HTMLButtonElement>(null);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -38,6 +41,8 @@ export function Fab({ icon, label, ariaLabel, onClick, className }: FabProps) {
       ref={ref}
       type="button"
       className={cn("gp-fab", extended && "gp-fab--extended", className)}
+      style={style}
+      suppressHydrationWarning={suppressHydrationWarning}
       onClick={onClick}
       aria-label={extended ? undefined : (ariaLabel ?? label)}
     >

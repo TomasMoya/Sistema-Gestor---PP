@@ -20,7 +20,17 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const supabase = getSupabaseServerClient();
   const body = await request.json();
 
-  const camposPermitidos = ["category_id", "task_id", "tipo", "monto", "fecha", "descripcion", "limite", "eliminado"] as const;
+  const camposPermitidos = [
+    "category_id",
+    "task_id",
+    "tipo",
+    "monto",
+    "currency",
+    "fecha",
+    "descripcion",
+    "limite",
+    "eliminado",
+  ] as const;
 
   const update: TransactionUpdate = {};
   for (const campo of camposPermitidos) {

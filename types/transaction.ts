@@ -1,3 +1,5 @@
+import type { Coins } from "@/lib/coins/coin";
+
 export type TipoTransaccion = "ingreso" | "gasto";
 
 export interface Transaction {
@@ -7,6 +9,7 @@ export interface Transaction {
   task_id: string | null;
   tipo: TipoTransaccion;
   monto: number;
+  currency: Coins;
   fecha: string;
   descripcion: string | null;
   limite: number | null;
@@ -15,8 +18,11 @@ export interface Transaction {
 }
 
 export type TransactionInsert = Pick<Transaction, "user_id" | "tipo" | "monto"> &
-  Partial<Pick<Transaction, "category_id" | "task_id" | "fecha" | "descripcion" | "limite">>;
+  Partial<Pick<Transaction, "category_id" | "task_id" | "currency" | "fecha" | "descripcion" | "limite">>;
 
 export type TransactionUpdate = Partial<
-  Pick<Transaction, "category_id" | "task_id" | "tipo" | "monto" | "fecha" | "descripcion" | "limite" | "eliminado">
+  Pick<
+    Transaction,
+    "category_id" | "task_id" | "tipo" | "monto" | "currency" | "fecha" | "descripcion" | "limite" | "eliminado"
+  >
 >;

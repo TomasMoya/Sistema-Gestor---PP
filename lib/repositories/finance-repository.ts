@@ -1,12 +1,17 @@
-import { monthKeyToDate, toISODate } from "../format";
+import { convertTotal, monthKeyToDate, toISODate } from "../format";
 import { fetchCategoryMap } from "./categories-repository";
 import type { FinanceData, Movement } from "../types";
+import type { Coins } from "../coins/coin";
 import type { Task as DbTask } from "@/types/task";
 import type { Transaction as DbTransaction } from "@/types/transaction";
+
+/** Moneda en la que se muestran los totales (resumen y gasto por categoría) hasta que haya un selector en la UI. */
+export const DISPLAY_CURRENCY: Coins = "EUR";
 
 export interface CreateMovementInput {
   type: "ingreso" | "gasto";
   amount: number; // céntimos
+  currency: Coins;
   /** Id de una fila de `categories`. */
   category?: string;
   date: string;
@@ -46,6 +51,7 @@ function movementInputToDbFields(input: CreateMovementInput) {
   return {
     tipo: input.type,
     monto: input.amount / 100,
+    currency: input.currency,
     category_id: input.category ?? null,
     fecha: input.date,
     descripcion: input.note ?? null,
@@ -67,20 +73,35 @@ export const financeRepository: FinanceRepository = {
     const transactions: DbTransaction[] = await transactionsRes.json();
     const tasks: DbTask[] = await tasksRes.json();
 
-    let income = 0;
-    let expenses = 0;
-    const byCategory = new Map<string, number>();
+    const incomeEntries: { amount: number; currency: Coins }[] = [];
+    const expenseEntries: { amount: number; currency: Coins }[] = [];
+    const byCategory = new Map<string, { amount: number; currency: Coins }[]>();
     for (const tx of transactions) {
-      const cents = Math.round(tx.monto * 100);
+      const entry = { amount: Math.round(tx.monto * 100), currency: tx.currency };
       if (tx.tipo === "ingreso") {
-        income += cents;
+        incomeEntries.push(entry);
       } else {
-        expenses += cents;
-        if (tx.category_id) byCategory.set(tx.category_id, (byCategory.get(tx.category_id) ?? 0) + cents);
+        expenseEntries.push(entry);
+        if (tx.category_id) {
+          const entries = byCategory.get(tx.category_id) ?? [];
+          entries.push(entry);
+          byCategory.set(tx.category_id, entries);
+        }
       }
     }
 
-    const categories = [...byCategory.entries()]
+    const [income, expenses, categoryAmounts] = await Promise.all([
+      convertTotal(incomeEntries, DISPLAY_CURRENCY),
+      convertTotal(expenseEntries, DISPLAY_CURRENCY),
+      Promise.all(
+        [...byCategory.entries()].map(
+          async ([categoryId, entries]) => [categoryId, await convertTotal(entries, DISPLAY_CURRENCY)] as const,
+        ),
+      ),
+    ]);
+    const categoryAmountMap = new Map(categoryAmounts);
+
+    const categories = [...categoryAmountMap.entries()]
       .map(([categoryId, amount]) => {
         const category = categoryMap.get(categoryId);
         return category ? { id: category.id, name: category.name, icon: category.icon, colorVar: category.colorVar, amount } : null;
@@ -125,6 +146,7 @@ export const financeRepository: FinanceRepository = {
     return rows.map((row) => ({
       id: row.id,
       amount: Math.round(row.monto * 100),
+      currency: row.currency,
       date: row.fecha,
       note: row.descripcion ?? undefined,
       category: row.category_id ? categoryMap.get(row.category_id) : undefined,

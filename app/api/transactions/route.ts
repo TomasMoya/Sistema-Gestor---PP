@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
     user_id: body.user_id,
     tipo: body.tipo,
     monto: body.monto,
+    currency: body.currency ?? undefined,
     category_id: body.category_id ?? null,
     task_id: body.task_id ?? null,
     fecha: body.fecha ?? undefined,

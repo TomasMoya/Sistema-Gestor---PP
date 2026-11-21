@@ -4,11 +4,13 @@ import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { Sheet } from "@/components/ui/Sheet";
+import { COIN_OPTIONS, type Coins } from "@/lib/coins/coin";
 import type { Category } from "@/types/category";
 
 export interface MovementFormInput {
   type: "ingreso" | "gasto";
   amount: number;
+  currency: Coins;
   category?: string;
   date: string;
   note?: string;
@@ -27,6 +29,7 @@ interface MovementFormSheetProps {
 export function MovementFormSheet({ categories, initial, onClose, onSubmit, defaultDate }: MovementFormSheetProps) {
   const [type, setType] = useState<"ingreso" | "gasto">(initial?.type ?? "gasto");
   const [amount, setAmount] = useState(initial ? (initial.amount / 100).toString().replace(".", ",") : "");
+  const [currency, setCurrency] = useState<Coins>(initial?.currency ?? "EUR");
   const [category, setCategory] = useState(initial?.category ?? "");
   const [date, setDate] = useState(initial?.date ?? defaultDate);
   const [note, setNote] = useState(initial?.note ?? "");
@@ -38,6 +41,7 @@ export function MovementFormSheet({ categories, initial, onClose, onSubmit, defa
     onSubmit({
       type,
       amount: Math.round(value * 100),
+      currency,
       category: type === "gasto" && category ? category : undefined,
       date,
       note: note.trim() || undefined,
@@ -70,21 +74,37 @@ export function MovementFormSheet({ categories, initial, onClose, onSubmit, defa
             </button>
           </div>
         </Field>
-        <Field label="Importe" htmlFor="movement-amount">
-          <input
-            id="movement-amount"
-            type="number"
-            inputMode="decimal"
-            step="0.01"
-            min="0.01"
-            required
-            autoFocus
-            className="gp-field__control"
-            value={amount}
-            onChange={(event) => setAmount(event.target.value)}
-            placeholder="0,00"
-          />
-        </Field>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "var(--space-3)" }}>
+          <Field label="Importe" htmlFor="movement-amount">
+            <input
+              id="movement-amount"
+              type="number"
+              inputMode="decimal"
+              step="0.01"
+              min="0.01"
+              required
+              autoFocus
+              className="gp-field__control"
+              value={amount}
+              onChange={(event) => setAmount(event.target.value)}
+              placeholder="0,00"
+            />
+          </Field>
+          <Field label="Moneda" htmlFor="movement-currency">
+            <select
+              id="movement-currency"
+              className="gp-field__control"
+              value={currency}
+              onChange={(event) => setCurrency(event.target.value as Coins)}
+            >
+              {COIN_OPTIONS.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </Field>
+        </div>
         {type === "gasto" && (
           <Field label="Categoría" htmlFor="movement-category">
             <select

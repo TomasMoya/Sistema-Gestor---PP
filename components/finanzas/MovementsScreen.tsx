@@ -28,7 +28,14 @@ interface SnackbarState {
 }
 
 function movementToFormInitial(movement: Movement): MovementFormInput {
-  return { type: "gasto", amount: movement.amount, category: movement.category?.id, date: movement.date, note: movement.note };
+  return {
+    type: "gasto",
+    amount: movement.amount,
+    currency: movement.currency,
+    category: movement.category?.id,
+    date: movement.date,
+    note: movement.note,
+  };
 }
 
 /** Gastos del mes divididos por categoría (§"Ver detalle"), cada uno editable/eliminable desde su menú ⋮. */

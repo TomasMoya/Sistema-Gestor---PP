@@ -32,7 +32,7 @@ export function MovementRow({ movement, onEdit, onDelete }: MovementRowProps) {
         </div>
       </div>
       <div className="gp-item__trail" onClick={(event) => event.stopPropagation()}>
-        <span className="gp-num">{formatCurrency(movement.amount)}</span>
+        <span className="gp-num">{formatCurrency(movement.amount, movement.currency)}</span>
         <RowMenu
           ariaLabel={`Más opciones: ${movement.note || movement.category?.name || "gasto"} del ${formatShortDate(movement.date)}`}
           items={[
