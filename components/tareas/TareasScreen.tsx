@@ -18,7 +18,7 @@ import { TaskDetailContent } from "./TaskDetailContent";
 import { TaskFormSheet, taskToFormInitial } from "./TaskFormSheet";
 import { formatHeadlineDate, getToday } from "@/lib/format";
 import { useIsExpanded } from "@/lib/hooks";
-import { categoriesRepository } from "@/lib/repositories/categories-repository";
+import { categoriesRepository, type CreateCategoryInput } from "@/lib/repositories/categories-repository";
 import { tasksRepository } from "@/lib/repositories/tasks-repository";
 import { PRIORITY_ORDER, countByPriority, groupTasks } from "@/lib/task-grouping";
 import { PRIORITY_FILTERS } from "@/lib/priority";
@@ -144,6 +144,12 @@ export function TareasScreen() {
     },
     [formTarget],
   );
+
+  const handleCreateCategory = useCallback(async (input: CreateCategoryInput) => {
+    const created = await categoriesRepository.createCategory(input);
+    setCategories((prev) => [...prev, created]);
+    return created;
+  }, []);
 
   const handleDelete = useCallback(async (id: string) => {
     setTasks((prev) => (prev ? prev.filter((t) => t.id !== id) : prev));
@@ -311,6 +317,7 @@ export function TareasScreen() {
           initial={formTarget === "create" ? undefined : taskToFormInitial(formTarget)}
           onClose={() => setFormTarget("closed")}
           onSubmit={handleSubmitTaskForm}
+          onCreateCategory={handleCreateCategory}
         />
       )}
 

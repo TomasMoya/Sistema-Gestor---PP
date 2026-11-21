@@ -2,9 +2,12 @@
 
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
+import { CategoryFormSheet } from "@/components/ui/CategoryFormSheet";
 import { Field } from "@/components/ui/Field";
+import { Icon } from "@/components/ui/Icon";
 import { Sheet } from "@/components/ui/Sheet";
 import { COIN_OPTIONS, type Coins } from "@/lib/coins/coin";
+import type { CreateCategoryInput } from "@/lib/repositories/categories-repository";
 import type { Category } from "@/types/category";
 
 export interface MovementFormInput {
@@ -22,17 +25,25 @@ interface MovementFormSheetProps {
   initial?: MovementFormInput;
   onClose: () => void;
   onSubmit: (input: MovementFormInput) => void;
+  onCreateCategory: (input: CreateCategoryInput) => Promise<Category>;
   defaultDate: string;
 }
 
 /** Hoja (móvil) / diálogo (escritorio) para crear o editar un ingreso o gasto. */
-export function MovementFormSheet({ categories, initial, onClose, onSubmit, defaultDate }: MovementFormSheetProps) {
+export function MovementFormSheet({ categories, initial, onClose, onSubmit, onCreateCategory, defaultDate }: MovementFormSheetProps) {
   const [type, setType] = useState<"ingreso" | "gasto">(initial?.type ?? "gasto");
   const [amount, setAmount] = useState(initial ? (initial.amount / 100).toString().replace(".", ",") : "");
   const [currency, setCurrency] = useState<Coins>(initial?.currency ?? "EUR");
   const [category, setCategory] = useState(initial?.category ?? "");
   const [date, setDate] = useState(initial?.date ?? defaultDate);
   const [note, setNote] = useState(initial?.note ?? "");
+  const [addingCategory, setAddingCategory] = useState(false);
+
+  async function handleCreateCategory(input: CreateCategoryInput) {
+    const created = await onCreateCategory(input);
+    setCategory(created.id);
+    setAddingCategory(false);
+  }
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -46,6 +57,10 @@ export function MovementFormSheet({ categories, initial, onClose, onSubmit, defa
       date,
       note: note.trim() || undefined,
     });
+  }
+
+  if (addingCategory) {
+    return <CategoryFormSheet onClose={() => setAddingCategory(false)} onSubmit={handleCreateCategory} />;
   }
 
   return (
@@ -106,21 +121,35 @@ export function MovementFormSheet({ categories, initial, onClose, onSubmit, defa
           </Field>
         </div>
         {type === "gasto" && (
-          <Field label="Categoría" htmlFor="movement-category">
-            <select
-              id="movement-category"
-              className="gp-field__control"
-              value={category}
-              onChange={(event) => setCategory(event.target.value)}
-            >
-              <option value="">Sin categoría</option>
-              {categories.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.nombre}
-                </option>
-              ))}
-            </select>
-          </Field>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "var(--space-3)" }}>
+            <Field label="Categoría" htmlFor="movement-category">
+              <select
+                id="movement-category"
+                className="gp-field__control"
+                value={category}
+                onChange={(event) => setCategory(event.target.value)}
+              >
+                <option value="">Sin categoría</option>
+                {categories.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.nombre}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Agregar" htmlFor="movement-category-add">
+              <button
+                id="movement-category-add"
+                type="button"
+                className="gp-field__control"
+                aria-label="Nueva categoría"
+                style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "var(--touch-target)" }}
+                onClick={() => setAddingCategory(true)}
+              >
+                <Icon name="add" />
+              </button>
+            </Field>
+          </div>
         )}
         <Field label="Fecha" htmlFor="movement-date">
           <input id="movement-date" type="date" className="gp-field__control" value={date} onChange={(event) => setDate(event.target.value)} />

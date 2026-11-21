@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { TaskDetailContent } from "./TaskDetailContent";
 import { TaskFormSheet, taskToFormInitial } from "./TaskFormSheet";
 import { getToday } from "@/lib/format";
-import { categoriesRepository } from "@/lib/repositories/categories-repository";
+import { categoriesRepository, type CreateCategoryInput } from "@/lib/repositories/categories-repository";
 import { tasksRepository } from "@/lib/repositories/tasks-repository";
 import type { Task } from "@/lib/types";
 import type { Category } from "@/types/category";
@@ -57,6 +57,12 @@ export function TaskDetailScreen({ id }: { id: string }) {
     setEditing(false);
   }
 
+  async function handleCreateCategory(input: CreateCategoryInput) {
+    const created = await categoriesRepository.createCategory(input);
+    setCategories((prev) => [...prev, created]);
+    return created;
+  }
+
   return (
     <>
       <AppBar overline="Tareas" title="Detalle">
@@ -73,7 +79,13 @@ export function TaskDetailScreen({ id }: { id: string }) {
       )}
 
       {editing && task && (
-        <TaskFormSheet categories={categories} initial={taskToFormInitial(task)} onClose={() => setEditing(false)} onSubmit={handleEditSubmit} />
+        <TaskFormSheet
+          categories={categories}
+          initial={taskToFormInitial(task)}
+          onClose={() => setEditing(false)}
+          onSubmit={handleEditSubmit}
+          onCreateCategory={handleCreateCategory}
+        />
       )}
     </>
   );

@@ -18,7 +18,7 @@ import { MovementFormSheet, type MovementFormInput } from "./MovementFormSheet";
 import { UpcomingPaymentRow } from "./UpcomingPaymentRow";
 import { ViewAmountInCurrencySheet } from "./ViewAmountInCurrencySheet";
 import { dateToMonthKey, formatMonthName, formatMonthYear, getToday, monthKeyToDate, shiftMonth } from "@/lib/format";
-import { categoriesRepository } from "@/lib/repositories/categories-repository";
+import { categoriesRepository, type CreateCategoryInput } from "@/lib/repositories/categories-repository";
 import { DISPLAY_CURRENCY, financeRepository } from "@/lib/repositories/finance-repository";
 import { tasksRepository } from "@/lib/repositories/tasks-repository";
 import type { Coins } from "@/lib/coins/coin";
@@ -74,6 +74,12 @@ export function FinanzasScreen() {
     setSheetOpen(false);
     setSnackbar(input.type === "ingreso" ? "Ingreso añadido" : "Gasto añadido");
     load(month);
+  }
+
+  async function handleCreateCategory(input: CreateCategoryInput) {
+    const created = await categoriesRepository.createCategory(input);
+    setCategories((prev) => [...prev, created]);
+    return created;
   }
 
   function handleBaseCurrencySubmit(currency: Coins) {
@@ -189,6 +195,7 @@ export function FinanzasScreen() {
           categories={categories}
           onClose={() => setSheetOpen(false)}
           onSubmit={handleCreateMovement}
+          onCreateCategory={handleCreateCategory}
           defaultDate={`${month}-01`}
         />
       )}

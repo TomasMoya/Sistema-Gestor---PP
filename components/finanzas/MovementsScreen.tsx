@@ -12,7 +12,7 @@ import { Snackbar } from "@/components/ui/Snackbar";
 import { MovementFormSheet, type MovementFormInput } from "./MovementFormSheet";
 import { MovementRow } from "./MovementRow";
 import { formatMonthYear, monthKeyToDate } from "@/lib/format";
-import { categoriesRepository } from "@/lib/repositories/categories-repository";
+import { categoriesRepository, type CreateCategoryInput } from "@/lib/repositories/categories-repository";
 import { financeRepository } from "@/lib/repositories/finance-repository";
 import type { Movement } from "@/lib/types";
 import type { Category } from "@/types/category";
@@ -69,6 +69,12 @@ export function MovementsScreen({ month }: MovementsScreenProps) {
     await financeRepository.updateMovement(editing.id, input);
     setEditing(null);
     load();
+  }
+
+  async function handleCreateCategory(input: CreateCategoryInput) {
+    const created = await categoriesRepository.createCategory(input);
+    setCategories((prev) => [...prev, created]);
+    return created;
   }
 
   async function handleDelete(movement: Movement) {
@@ -132,6 +138,7 @@ export function MovementsScreen({ month }: MovementsScreenProps) {
           defaultDate={editing.date}
           onClose={() => setEditing(null)}
           onSubmit={handleEditSubmit}
+          onCreateCategory={handleCreateCategory}
         />
       )}
 

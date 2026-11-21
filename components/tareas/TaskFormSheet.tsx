@@ -3,8 +3,11 @@
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
+import { CategoryFormSheet } from "@/components/ui/CategoryFormSheet";
+import { Icon } from "@/components/ui/Icon";
 import { Sheet } from "@/components/ui/Sheet";
 import { PRIORITY_TAG } from "@/lib/priority";
+import type { CreateCategoryInput } from "@/lib/repositories/categories-repository";
 import type { Priority, Task } from "@/lib/types";
 import type { Category } from "@/types/category";
 
@@ -33,17 +36,25 @@ interface TaskFormSheetProps {
   initial?: TaskFormInput;
   onClose: () => void;
   onSubmit: (input: TaskFormInput) => void;
+  onCreateCategory: (input: CreateCategoryInput) => Promise<Category>;
 }
 
 const PRIORITIES: Priority[] = ["high", "medium", "low"];
 
 /** Hoja inferior (móvil) / diálogo (escritorio) para crear o editar una tarea. Prioridad Media por defecto. */
-export function TaskFormSheet({ categories, initial, onClose, onSubmit }: TaskFormSheetProps) {
+export function TaskFormSheet({ categories, initial, onClose, onSubmit, onCreateCategory }: TaskFormSheetProps) {
   const [title, setTitle] = useState(initial?.title ?? "");
   const [dueDate, setDueDate] = useState(initial?.dueDate ?? "");
   const [priority, setPriority] = useState<Priority>(initial?.priority ?? "medium");
   const [category, setCategory] = useState(initial?.category ?? "");
   const [amount, setAmount] = useState(initial?.amount != null ? (initial.amount / 100).toString().replace(".", ",") : "");
+  const [addingCategory, setAddingCategory] = useState(false);
+
+  async function handleCreateCategory(input: CreateCategoryInput) {
+    const created = await onCreateCategory(input);
+    setCategory(created.id);
+    setAddingCategory(false);
+  }
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -55,6 +66,10 @@ export function TaskFormSheet({ categories, initial, onClose, onSubmit }: TaskFo
       category: category || undefined,
       amount: amount ? Math.round(parseFloat(amount.replace(",", ".")) * 100) : undefined,
     });
+  }
+
+  if (addingCategory) {
+    return <CategoryFormSheet showTipo={false} onClose={() => setAddingCategory(false)} onSubmit={handleCreateCategory} />;
   }
 
   return (
@@ -95,21 +110,35 @@ export function TaskFormSheet({ categories, initial, onClose, onSubmit }: TaskFo
             ))}
           </div>
         </Field>
-        <Field label="Categoría" htmlFor="task-category">
-          <select
-            id="task-category"
-            className="gp-field__control"
-            value={category}
-            onChange={(event) => setCategory(event.target.value)}
-          >
-            <option value="">Sin categoría</option>
-            {categories.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.nombre}
-              </option>
-            ))}
-          </select>
-        </Field>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "var(--space-3)" }}>
+          <Field label="Categoría" htmlFor="task-category">
+            <select
+              id="task-category"
+              className="gp-field__control"
+              value={category}
+              onChange={(event) => setCategory(event.target.value)}
+            >
+              <option value="">Sin categoría</option>
+              {categories.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.nombre}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Agregar" htmlFor="task-category-add">
+            <button
+              id="task-category-add"
+              type="button"
+              className="gp-field__control"
+              aria-label="Nueva categoría"
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "var(--touch-target)" }}
+              onClick={() => setAddingCategory(true)}
+            >
+              <Icon name="add" />
+            </button>
+          </Field>
+        </div>
         <Field label="Importe (opcional)" htmlFor="task-amount">
           <input
             id="task-amount"
