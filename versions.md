@@ -17,6 +17,17 @@ Se reconoce el prefijo al inicio del mensaje de commit.
 
 ## Versiones publicadas
 
+### 0.3.0
+
+0.2.0 → 0.3.0 · Incremento menor · 1 commits · 2026-11-21
+
+**Nuevas funcionalidades**
+
+- `0863496` feat: Adding option for create personalized categories in tasks and finances
+
+---
+
+
 ### 0.2.0
 
 0.1.2 → 0.2.0 · Incremento menor · 1 commits · 2026-11-21
