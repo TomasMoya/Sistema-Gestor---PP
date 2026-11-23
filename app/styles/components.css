@@ -124,7 +124,7 @@
 .gp-screen__frame { flex: 1; display: flex; min-height: 0; position: relative; }
 .gp-screen__rail { display: none; }
 .gp-screen__main { flex: 1; min-width: 0; overflow: auto; padding: var(--space-2) var(--space-4) 96px; display: grid; gap: var(--space-6); align-content: start; }
-.gp-screen__fab { position: absolute; right: var(--space-4); bottom: var(--space-4); }
+.gp-screen__fab { position: absolute; right: var(--space-4); bottom: var(--space-4); display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-3); }
 .gp-screen__navbar { flex: none; }
 .gp-cols { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
 .gp-desk-only { display: none; }

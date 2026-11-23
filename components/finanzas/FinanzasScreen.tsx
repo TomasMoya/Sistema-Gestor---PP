@@ -141,7 +141,7 @@ export function FinanzasScreen() {
             <section className="gp-section">
               <SectionHeader title="Próximos pagos" actionLabel="Ver todos" />
               {data.upcomingPayments.length === 0 ? (
-                <EmptyState icon="event_available" text="No hay pagos próximos este mes." />
+                <EmptyState icon="event_available" text="No hay tareas con pagos próximos este mes." />
               ) : (
                 <GroupedList aria-label="Próximos pagos">
                   {data.upcomingPayments.map((payment) => (
@@ -179,7 +179,7 @@ export function FinanzasScreen() {
         </div>
       )}
 
-      <div className="gp-screen__fab" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "var(--space-3)" }}>
+      <div className="gp-screen__fab">
         <Fab
           icon="currency_exchange"
           ariaLabel="Configurar moneda base"

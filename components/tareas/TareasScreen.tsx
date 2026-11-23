@@ -20,7 +20,7 @@ import { formatHeadlineDate, getToday } from "@/lib/format";
 import { useIsExpanded } from "@/lib/hooks";
 import { categoriesRepository, type CreateCategoryInput } from "@/lib/repositories/categories-repository";
 import { tasksRepository } from "@/lib/repositories/tasks-repository";
-import { PRIORITY_ORDER, countByPriority, groupTasks } from "@/lib/task-grouping";
+import { countByPriority, groupTasks } from "@/lib/task-grouping";
 import { PRIORITY_FILTERS } from "@/lib/priority";
 import type { Priority, Task } from "@/lib/types";
 import type { Category } from "@/types/category";
@@ -43,7 +43,6 @@ export function TareasScreen() {
   const [priorityFilter, setPriorityFilter] = useState<Priority | "all">("all");
   const [search, setSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
-  const [sortByPriority, setSortByPriority] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [formTarget, setFormTarget] = useState<"closed" | "create" | Task>("closed");
   const [snackbar, setSnackbar] = useState<SnackbarState | null>(null);
@@ -82,14 +81,7 @@ export function TareasScreen() {
     [searchFiltered, priorityFilter],
   );
 
-  const groups = useMemo(() => {
-    const base = groupTasks(visibleTasks, TODAY);
-    if (!sortByPriority) return base;
-    return base.map((group) => ({
-      ...group,
-      tasks: [...group.tasks].sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]),
-    }));
-  }, [visibleTasks, sortByPriority]);
+  const groups = useMemo(() => groupTasks(visibleTasks, TODAY), [visibleTasks]);
 
   const flatOrder = useMemo(() => groups.flatMap((g) => g.tasks), [groups]);
   const selectedTask = tasks?.find((t) => t.id === selectedId) ?? null;
@@ -176,7 +168,6 @@ export function TareasScreen() {
       } else if (event.key === "/") {
         event.preventDefault();
         setSearchOpen(true);
-        requestAnimationFrame(() => searchInputRef.current?.focus());
       } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
         if (!isExpanded || flatOrder.length === 0) return;
         event.preventDefault();
@@ -193,13 +184,16 @@ export function TareasScreen() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [formTarget, isExpanded, flatOrder, selectedId, selectedTask, handleToggle]);
 
+  useEffect(() => {
+    if (searchOpen) requestAnimationFrame(() => searchInputRef.current?.focus());
+  }, [searchOpen]);
+
   const pendingExists = tasks === null || tasks.some((t) => !t.done);
 
   return (
     <>
       <AppBar overline={`Tareas · ${totalPending} pendientes`} title={formatHeadlineDate(TODAY)}>
         <IconButton icon="search" ariaLabel="Buscar tareas" onClick={() => setSearchOpen((v) => !v)} />
-        <IconButton icon="sort" ariaLabel="Ordenar por prioridad" aria-pressed={sortByPriority} onClick={() => setSortByPriority((v) => !v)} />
         <Button variant="filled" icon="add" className="gp-desk-only" onClick={() => setFormTarget("create")} style={{ marginLeft: 8 }}>
           Nueva tarea
         </Button>
@@ -236,7 +230,7 @@ export function TareasScreen() {
           {!error && tasks === null && <Skeleton count={5} />}
 
           {!error && tasks !== null && groups.length === 0 && (
-            <EmptyState icon="task_alt" text="No tienes tareas pendientes. Añade una." actionLabel="Nueva tarea" onAction={() => setFormTarget("create")} />
+            <EmptyState icon="task_alt" text="No tienes tareas. Añade una." actionLabel="Nueva tarea" onAction={() => setFormTarget("create")} />
           )}
 
           {!error &&
