@@ -17,6 +17,17 @@ Se reconoce el prefijo al inicio del mensaje de commit.
 
 ## Versiones publicadas
 
+### 0.3.1
+
+0.3.0 → 0.3.1 · Incremento parche · 1 commits · 2026-11-23
+
+**Correcciones**
+
+- `16207ed` fix: Adding focus on search component after click de search icon and deleting an duplicated sorter icon
+
+---
+
+
 ### 0.3.0
 
 0.2.0 → 0.3.0 · Incremento menor · 1 commits · 2026-11-21
