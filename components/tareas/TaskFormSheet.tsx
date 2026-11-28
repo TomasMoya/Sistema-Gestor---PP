@@ -99,7 +99,7 @@ export function TaskFormSheet({ categories, initial, onClose, onSubmit, onCreate
           />
         </Field>
         <Field label="Fecha" htmlFor="task-date">
-          <input id="task-date" type="date" className="gp-field__control" value={dueDate} onChange={(event) => setDueDate(event.target.value)} />
+          <input id="task-date" type="date" lang="es-ES" className="gp-field__control" value={dueDate} onChange={(event) => setDueDate(event.target.value)} />
         </Field>
         <Field label="Prioridad" htmlFor="task-priority">
           <div className="gp-segmented" role="radiogroup" aria-label="Prioridad" id="task-priority">

@@ -152,7 +152,7 @@ export function MovementFormSheet({ categories, initial, onClose, onSubmit, onCr
           </div>
         )}
         <Field label="Fecha" htmlFor="movement-date">
-          <input id="movement-date" type="date" className="gp-field__control" value={date} onChange={(event) => setDate(event.target.value)} />
+          <input id="movement-date" type="date" lang="es-ES" className="gp-field__control" value={date} onChange={(event) => setDate(event.target.value)} />
         </Field>
         <Field label="Nota (opcional)" htmlFor="movement-note">
           <input id="movement-note" className="gp-field__control" value={note} onChange={(event) => setNote(event.target.value)} />

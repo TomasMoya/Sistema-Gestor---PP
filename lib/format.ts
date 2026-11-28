@@ -67,6 +67,18 @@ export function formatLongDate(iso: string): string {
   return `${capitalize(WEEKDAYS_LONG[d.getDay()])}, ${d.getDate()} de ${MONTHS_LONG[d.getMonth()]}`;
 }
 
+/** "martes 27" — día y número sin mes, para componer la cabecera de la agenda en Calendario. */
+export function formatWeekdayDay(iso: string): string {
+  const d = parseISODate(iso);
+  return `${WEEKDAYS_LONG[d.getDay()]} ${d.getDate()}`;
+}
+
+/** "Jue" — abreviatura del día de la semana para el bloque de fecha de "Próximos días". */
+export function formatWeekdayShort(iso: string): string {
+  const d = parseISODate(iso);
+  return capitalize(WEEKDAYS_SHORT[d.getDay()]);
+}
+
 /** "Jue 29 oct" — metadatos de fila. */
 export function formatShortDate(iso: string): string {
   const d = parseISODate(iso);
