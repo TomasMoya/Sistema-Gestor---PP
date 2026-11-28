@@ -17,6 +17,17 @@ Se reconoce el prefijo al inicio del mensaje de commit.
 
 ## Versiones publicadas
 
+### 0.4.0
+
+0.3.1 → 0.4.0 · Incremento menor · 1 commits · 2026-11-28
+
+**Nuevas funcionalidades**
+
+- `fa0bac1` feat: Adding the calendar with tasks and finances
+
+---
+
+
 ### 0.3.1
 
 0.3.0 → 0.3.1 · Incremento parche · 1 commits · 2026-11-23
